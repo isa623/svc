@@ -1,49 +1,46 @@
-
-// 
-let x;
-let y;
-let vinkel = 45;
-let v0 = 500;
-let g = 9.82;
-let y0
-let ball
+let bold1
+let bold2
 
 function setup() {
-	createCanvas(800, 800)
+	createCanvas(800, 800);
 	angleMode(DEGREES);
-	y0 = height
-
+	bold1 = new Bold(50, 45, 500);
+	bold2 = new Bold(50, 70, 500);
 }
 
 function draw() {
-	background('blue')
-	ball = new Ball(x, y, 50)
-
-
+	background('blue');
 	let t = millis() / 1000;
-
-
-	let v0x = 0.25 * v0 * cos(-vinkel);
-	let v0y = 0.5 * v0 * sin(-vinkel);
-	let led1 = 1 / 2. * (g) * (t ** 2) * 6
-	let led2 = v0y * t
-	x = v0x * t;
-	y = led1 + led2 + y0;
-	//circle(x, y, 50)
-	fill('red')
-	//constrain(x + 50, width, height)
-	console.log(x, y, led1, led2, t)
-	ball.show()
+	bold1.opdater(t);
+	bold2.opdater(t);
+	bold1.show();
+	bold2.show();
 }
 
-class Ball {
-	constructor(x, y, r) {
-		this.x = x
-		this.y = y
-		this.r = r
+class Bold {
+	static g = 9.82;
+
+	constructor(r, vinkel, v0) {
+		this.x = 0;
+		this.y = height;
+		this.r = r;
+		this.vinkel = vinkel;
+		this.v0 = v0;
 	}
+
+	opdater(t) {
+		let v0x = 0.25 * this.v0 * cos(-this.vinkel);
+		let v0y = 0.5 * this.v0 * sin(-this.vinkel);
+		let led1 = 1 / 2. * (Bold.g) * (t ** 2) * 6;
+		let led2 = v0y * t;
+		this.x = v0x * t;
+		this.y = led1 + led2 + height;
+	}
+
 	show() {
-		circle(this.x, this.y, this.r * 2)
-		fill('red')
+		this.x = constrain(this.x, 0, width - this.r);
+		this.y = constrain(this.y, -999, height - this.r);
+		circle(this.x, this.y, this.r * 2);
+		fill('red');
 	}
 }
