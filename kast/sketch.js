@@ -2,6 +2,7 @@
 let bolde = [];
 let vinkelInputs = [];
 let hastighedInputs = [];
+let farver = ['red', 'yellow', 'green'];
 let aktiv = false;
 let pauseButton;
 let sidsteTid = 0;
@@ -14,12 +15,14 @@ function setup() {
 		let angle = i * 5 + 35;
 		let angleInput = createInput(angle.toString());
 		angleInput.position(10, height + 10 + i * 30);
+		angleInput.style('background-color', farver[i]);
 		vinkelInputs.push(angleInput);
 
 		let v0 = 300
-		let speedInput = createInput(v0.toString());
-		speedInput.position(70, height + 10 + i * 30);
-		hastighedInputs.push(speedInput);
+		let hastighedInput = createInput(v0.toString());
+		hastighedInput.position(70, height + 10 + i * 30);
+		hastighedInput.style('background-color', farver[i]);
+		hastighedInputs.push(hastighedInput);
 	}
 
 	let startButton = createButton("Start");
@@ -52,7 +55,7 @@ function start() {
 		let angle = parseFloat(vinkelInputs[i].value());
 		let hastighed = parseFloat(hastighedInputs[i].value());
 		if (!isNaN(angle) && !isNaN(hastighed)) {
-			bolde.push(new Bold(50, angle, hastighed));
+			bolde.push(new Bold(50, angle, hastighed, farver[i]));
 		}
 	}
 }
@@ -73,10 +76,11 @@ class Bold {
 	static skalerV0y = 1.0;
 	static skalerY = 6;
 
-	constructor(r, vinkel, v0) {
+	constructor(r, vinkel, v0, color) {
 		this.r = r;
 		this.vinkel = vinkel;
 		this.v0 = v0;
+		this.farve = color;
 		this.tid = 0;
 	}
 
@@ -94,7 +98,7 @@ class Bold {
 	show() {
 		this.x = constrain(this.x, 0, width - this.r);
 		this.y = constrain(this.y, -999, height - this.r);
-		fill('red');
+		fill(this.farve);
 		circle(this.x, this.y, this.r * 2);
 	}
 }
