@@ -1,91 +1,91 @@
-let balls = [];
-let angleInputs = [];
-let speedInputs = [];
-let running = false;
-let oldt = 0;
+
+let bolde = [];
+let vinkelInputs = [];
+let hastighedInputs = [];
+let aktiv = false;
+let pauseButton;
+let sidsteTid = 0;
 
 function setup() {
 	createCanvas(800, 800);
 	angleMode(DEGREES);
 
 	for (let i = 0; i < 3; i++) {
-		let angle = (i + 1) * 15
+		let angle = i * 5 + 35;
 		let angleInput = createInput(angle.toString());
 		angleInput.position(10, height + 10 + i * 30);
-		angleInputs.push(angleInput);
+		vinkelInputs.push(angleInput);
 
-		let v0 = 300 + (i + 1) * 100
+		let v0 = 300
 		let speedInput = createInput(v0.toString());
 		speedInput.position(70, height + 10 + i * 30);
-		speedInputs.push(speedInput);
+		hastighedInputs.push(speedInput);
 	}
 
 	let startButton = createButton("Start");
 	startButton.position(10, height + 100);
 	startButton.mousePressed(start);
-
-	let pauseButton = createButton("Pause");
+	pauseButton = createButton("Pause");
 	pauseButton.position(70, height + 100);
-	pauseButton.mousePressed(pause);
-
-	let videreButton = createButton("Videre");
-	videreButton.position(140, height + 100);
-	videreButton.mousePressed(videre);
+	pauseButton.mousePressed(pause_videre);
 }
 
 function draw() {
-	if (running) {
-		t = millis() / 1000;
-		deltat = t - oldt;
+	if (aktiv) {
+		let tid = millis() / 1000;
+		let = dt = tid - sidsteTid;
 		background('blue');
-		for (let ball of balls) {
-			ball.opdater(deltat);
-			ball.show();
+		for (let bold of bolde) {
+			bold.opdater(dt);
+			bold.show();
 		}
-		oldt = t;
+		sidsteTid = tid;
 	} else {
-		oldt = millis() / 1000;
+		sidsteTid = millis() / 1000;
 	}
 }
 
 function start() {
-	running = true;
-	balls = [];
+	aktiv = true;
+	bolde = [];
 	for (let i = 0; i < 3; i++) {
-		let angle = parseFloat(angleInputs[i].value());
-		let speed = parseFloat(speedInputs[i].value());
-		if (!isNaN(angle) && !isNaN(speed)) {
-			balls.push(new Bold(50, angle, speed));
+		let angle = parseFloat(vinkelInputs[i].value());
+		let hastighed = parseFloat(hastighedInputs[i].value());
+		if (!isNaN(angle) && !isNaN(hastighed)) {
+			bolde.push(new Bold(50, angle, hastighed));
 		}
 	}
 }
 
-function pause() {
-	running = false;
-}
-
-function videre() {
-	running = true;
+function pause_videre() {
+	if (aktiv) {
+		pauseButton.html('Videre');
+		aktiv = false;
+	} else {
+		pauseButton.html('Pause');
+		aktiv = true;
+	}
 }
 
 class Bold {
 	static g = 9.82;
+	static skalerV0x = 0.5;
+	static skalerV0y = 1.0;
+	static skalerY = 6;
 
 	constructor(r, vinkel, v0) {
-		this.x = 0;
-		this.y = height;
 		this.r = r;
 		this.vinkel = vinkel;
 		this.v0 = v0;
-		this.time = 0;
+		this.tid = 0;
 	}
 
-	opdater(deltat) {
-		this.time += deltat;
-		let t = this.time;
-		let v0x = 0.25 * this.v0 * cos(-this.vinkel);
-		let v0y = 0.5 * this.v0 * sin(-this.vinkel);
-		let led1 = 1 / 2. * (Bold.g) * (t ** 2) * 6;
+	opdater(dt) {
+		this.tid += dt;
+		let t = this.tid;
+		let v0x = this.v0 * cos(-this.vinkel) * Bold.skalerV0x;
+		let v0y = this.v0 * sin(-this.vinkel) * Bold.skalerV0y;
+		let led1 = 1 / 2. * (Bold.g) * (t ** 2) * Bold.skalerY;
 		let led2 = v0y * t;
 		this.x = v0x * t;
 		this.y = led1 + led2 + height;
