@@ -1,30 +1,12 @@
-
 let bolde = [];
-let vinkelInputs = [];
-let hastighedInputs = [];
 let farver = ['red', 'yellow', 'green'];
 let aktiv = false;
 let pauseButton;
 let sidsteTid = 0;
+let vinkelArray = [];
+let hastighedArray = [];
 
-function setup() {
-	createCanvas(800, 800);
-	angleMode(DEGREES);
-
-	for (let i = 0; i < 3; i++) {
-		let angle = i * 5 + 35;
-		let angleInput = createInput(angle.toString());
-		angleInput.position(10, height + 10 + i * 30);
-		angleInput.style('background-color', farver[i]);
-		vinkelInputs.push(angleInput);
-
-		let v0 = 300
-		let hastighedInput = createInput(v0.toString());
-		hastighedInput.position(70, height + 10 + i * 30);
-		hastighedInput.style('background-color', farver[i]);
-		hastighedInputs.push(hastighedInput);
-	}
-
+function lavKnapper() {
 	let startButton = createButton("Start");
 	startButton.position(10, height + 100);
 	startButton.mousePressed(start);
@@ -33,11 +15,28 @@ function setup() {
 	pauseButton.mousePressed(pause_videre);
 }
 
+function lavInputFelt(inputsArray, posX, posY, felt, farve) {
+	let inputFelt = createInput(felt.toString());
+	inputFelt.position(posX, posY);
+	inputFelt.style('background-color', farve);
+	inputsArray.push(inputFelt);
+}
+
+function setup() {
+	createCanvas(800, 800);
+	angleMode(DEGREES);
+
+	for (let i = 0; i < 3; i++) {
+		lavInputFelt(vinkelArray, 10, (height + 10 + i * 30), (i * 5 + 35), farver[i]);
+		lavInputFelt(hastighedArray, 70, (height + 10 + i * 30), 300, farver[i]);
+	}
+	lavKnapper();
+}
 function draw() {
 	if (aktiv) {
+		background('blue');
 		let tid = millis() / 1000;
 		let = dt = tid - sidsteTid;
-		background('blue');
 		for (let bold of bolde) {
 			bold.opdater(dt);
 			bold.show();
@@ -51,11 +50,11 @@ function draw() {
 function start() {
 	aktiv = true;
 	bolde = [];
-	for (let i = 0; i < 3; i++) {
-		let angle = parseFloat(vinkelInputs[i].value());
-		let hastighed = parseFloat(hastighedInputs[i].value());
-		if (!isNaN(angle) && !isNaN(hastighed)) {
-			bolde.push(new Bold(50, angle, hastighed, farver[i]));
+	for (let i = 0; i < vinkelArray.length; i++) {
+		let vinkel = parseFloat(vinkelArray[i].value());
+		let hastighed = parseFloat(hastighedArray[i].value());
+		if (!isNaN(vinkel) && !isNaN(hastighed)) {
+			bolde.push(new Bold(50, vinkel, hastighed, farver[i]));
 		}
 	}
 }
@@ -76,11 +75,13 @@ class Bold {
 	static skalerV0y = 1.0;
 	static skalerY = 6;
 
-	constructor(r, vinkel, v0, color) {
+	constructor(r, vinkel, v0, farve) {
+		this.x = 0;
+		this.y = 0;
 		this.r = r;
 		this.vinkel = vinkel;
 		this.v0 = v0;
-		this.farve = color;
+		this.farve = farve;
 		this.tid = 0;
 	}
 
@@ -102,3 +103,5 @@ class Bold {
 		circle(this.x, this.y, this.r * 2);
 	}
 }
+
+
